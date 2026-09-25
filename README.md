@@ -1,14 +1,20 @@
-# Cloud Telemetry Service (Python 3.11)
+# Telemetry Core Engine (C++20)
 
-FastAPI-powered asynchronous microservice that ingests telemetry streams from core engines and routes batches to AWS SQS and S3 data lakes.
+High-performance, lock-free telemetry ingestion and ring-buffer aggregation engine.
 
-## Features
-- **Async High-Throughput Ingestion**: Validates batches using Pydantic v2 schemas.
-- **Adaptive SQS Dispatcher**: Automatic backoff when queues encounter throttling.
-- **Docker Multi-Stage Build**: Secure distroless image deployment.
+## Architecture
+- **Lock-Free Ring Buffer**: Cache-line aligned (`alignas(64)`) circular buffer to eliminate false sharing.
+- **SIMD String Scanner**: Fast tokenization of metric key-value tags.
+- **Zero-Copy Serialization**: Memory mapped ring-buffer dumps for downstream microservices.
 
-## Running Locally
+## Build Requirements
+- CMake >= 3.20
+- GCC >= 11 or Clang >= 14 (C++20 support)
+- GoogleTest for unit testing
+
+## Quickstart
 ```bash
-poetry install
-poetry run uvicorn app.main:app --reload --port 8000
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+ctest --test-dir build --output-on-failure
 ```
