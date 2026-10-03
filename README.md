@@ -1,14 +1,16 @@
-# Cloud Telemetry Service (Python 3.11)
+# AWS Telemetry Platform Infrastructure (Terraform)
 
-FastAPI-powered asynchronous microservice that ingests telemetry streams from core engines and routes batches to AWS SQS and S3 data lakes.
+Modular Infrastructure as Code (IaC) provisioning resilient AWS architecture for high-throughput telemetry ingestion.
 
-## Features
-- **Async High-Throughput Ingestion**: Validates batches using Pydantic v2 schemas.
-- **Adaptive SQS Dispatcher**: Automatic backoff when queues encounter throttling.
-- **Docker Multi-Stage Build**: Secure distroless image deployment.
+## Modules
+- `modules/vpc`: Multi-AZ VPC with public and private subnets, NAT Gateway, and flow logs.
+- `modules/ecs`: AWS ECS Fargate cluster with least-privilege IAM execution roles.
+- `modules/s3`: Encrypted raw telemetry storage with KMS CMK and lifecycle rules.
+- `modules/sqs`: Dead-letter queue (DLQ) backed FIFO ingestion pipeline.
 
-## Running Locally
+## Usage
 ```bash
-poetry install
-poetry run uvicorn app.main:app --reload --port 8000
+cd environments/dev
+terraform init
+terraform plan
 ```
